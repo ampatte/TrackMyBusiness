@@ -4,10 +4,10 @@ VALUES  ('Executive'),
         ('Sales'),
         ('Customer Service');
 
-INSERT INTO roles (title, salary, department_id)
+INSERT INTO role (title, salary, department_id)
 VALUES  ('Manager', 50000.00, 1),
         ('Accountant', 45000.00, 2),
-        ('Sales Rep', 40000.00, 3),
+        ('Sales Rep', 40000.00, 4),
         ('Customer Service Rep', 30000.00, 4);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)

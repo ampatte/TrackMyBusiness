@@ -1,23 +1,34 @@
 
-
--- view all departments
--- formatted table showing department names 
--- and department ids
 SELECT *
 FROM department
+-- view all departments
+-- department names 
+-- and department ids
 
-
+SELECT *
+FROM role
 -- view all roles
 -- job title, 
 -- role id, 
 -- the department that role belongs to, 
 -- and the salary for that role
+
 SELECT *
-FROM roles
+FROM employee
+-- employee ids
+-- first names
+-- last names
+-- job titles
+-- departments
+-- salaries
+-- managers that the employees report to
+
+SELECT *
+FROM role
 JOIN department ON role.department = department.id;
 
 SELECT *
-FROM roles
+FROM role
 GROUP BY salary;
 
 -- view all employees
