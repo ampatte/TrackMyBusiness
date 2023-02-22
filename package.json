@@ -1,0 +1,32 @@
+{
+  "name": "trackmybusiness",
+  "version": "1.0.0",
+  "description": "",
+  "main": "node server.js",
+  "scripts": {
+    "start": " server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "asciiart-logo": "^0.2.7",
+    "console.table": "^0.10.0",
+    "dotenv": "^16.0.3",
+    "inquirer": "^8.2.4",
+    "mysql2": "^3.0.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.49.0",
+    "@typescript-eslint/parser": "^5.49.0",
+    "eslint": "^8.33.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ampatte/TrackMyBusiness.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ampatte/TrackMyBusiness/issues"
+  },
+  "homepage": "https://github.com/ampatte/TrackMyBusiness#readme"
+}
