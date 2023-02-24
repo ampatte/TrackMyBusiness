@@ -342,6 +342,72 @@ function updateEmployeeRole() {
       });
       });
     }
+    //delete a department
+function deleteDepartment() {
+  db.findAllDepartments()
+  .then(([rows]) => {
+     let departments = rows
+     const departmentChoices = departments.map(({ id, name }) => ({
+     name: name,
+     value: id,
+}));
+  prompt([
+    {
+      type: 'input',
+      name: 'dept',
+      message: 'What department would you like to delete?',
+      choices: departmentChoices
+    }
+  ])
+  .then(res => db.deleteDepartment(res.departmentId))
+  .then(() => console.log('New department deleted from the database'))
+  .then(() => runMenu());
+    });
+}
+//delete a role
+function deleteRole() {
+  db.findAllRoles()
+  .then(([rows]) => {
+     let roles = rows
+     const roleChoices = roles.map(({ id, name }) => ({
+     name: name,
+     value: id,
+}));
+  prompt([
+    {
+      type: 'input',
+      name: 'dept',
+      message: 'What role would you like to delete?',
+      choices: roleChoices
+    }
+  ])
+  .then(res => db.deleteRole(res.roleId))
+  .then(() => console.log('New role deleted from the database'))
+  .then(() => runMenu());
+    });
+}
+//delete new employee
+function deleteEmployee() {
+  db.findAllEmployees()
+  .then(([rows]) => {
+     let employees = rows
+     const employeeChoices = employees.map(({ id, first_name, last_name}) => ({
+     name: `${first_name} ${last_name}`,
+     value: id,
+}));
+  prompt([
+    {
+      type: 'input',
+      name: 'dept',
+      message: 'What employee would you like to delete?',
+      choices: employeeChoices
+    }
+  ])
+  .then(res => db.addEmployee(res.employeeId))
+  .then(() => console.log('New employee deleted from the database'))
+  .then(() => runMenu());
+    });
+  }
  // Exit the application
  function exit() {
   console.log("Goodbye!");
