@@ -6,7 +6,7 @@ class DB {
     }
     findAllEmployees() {
         return this.connection.promise().query(
-        SELECT employees.id, employee.first_name,
+        SELECT employee.id, employee.first_name,
     );
 }
 }

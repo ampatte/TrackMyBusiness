@@ -7,7 +7,6 @@ const connection = require('./connection');
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
-function loadMainPrompts()
 
 const db_menu = [
 {
@@ -16,187 +15,337 @@ const db_menu = [
   message: 'What would you like to do?',
   choices: [
   {
-    name: 'View all departments',
+    name: 'View all Departments',
     value: 'VIEW_DEPARTMENTS',
   }, 
   {
-    name:'View all roles',
-    value: 'VIEW_DEPARTMENTS',
+    name:'View all Roles',
+    value: 'VIEW_ROLES',
   },
   {
-    name:'View all employees',
-    value: 'VIEW_DEPARTMENTS',
+    name:'View all Employees',
+    value: 'VIEW_EMPLOYEES',
   },
   {
-    name:'View employees by department',
-    value: 'VIEW_DEPARTMENTS',
+    name:'Add a Department',
+    value: 'ADD_DEPARTMENT',
   },
   {
-    name:'View employees by manager',
-    value: 'VIEW_DEPARTMENTS',
+    name:'Add a Role',
+    value: 'ADD_ROLE',
   },
   {
-    name:'Add a department',
-    value: 'VIEW_DEPARTMENTS',
+    name:'Add an Employee',
+    value: 'ADD_EMPLOYEE',
   },
   {
-    name:'Add a role',
-    value: 'VIEW_DEPARTMENTS',
+    name:'Update an Employee Role',
+    value: 'UPDATE_EMPLOYEE_ROLE',
+  },
+   {
+    name:'Update Employee Managers',
+    value: 'UPDATE_EMPLOYEE_MANAGERS',
   },
   {
-    name:'Add an employee',
-    value: 'VIEW_DEPARTMENTS',
+    name:'View Employees by Manager',
+    value: 'VIEW_EMPLOYEES_BY_MANAGER',
+  },
+   {
+    name:'View Employees by department',
+    value: 'VIEW_EMPLOYEES_BY_DEPARTMENT',
   },
   {
-    name:'Update an employee role',
-    value: 'VIEW_DEPARTMENTS',
+    name:'delete Departments',
+    value: 'DELETE_DEPARTMENTS',
   },
   {
-    name:'Remove Department',
-    value: 'VIEW_DEPARTMENTS',
+    name:'delete Roles',
+    value: 'DELETE_ROLES',
   },
   {
-    name:'Update an employee role',
-    value: 'VIEW_DEPARTMENTS',
+    name:'delete Employees',
+    value: 'DELETE_EMPLOYEES',
   },
   {  
     name: 'Exit',
-    value: Exit
+    value: 'Exit',
   },
   ],
 },  
 ]
-const add_department = [
-{
-  type: 'input',
-  name: 'dept',
-  message: 'What department would you like to add?',
-}
-]
-const add_employee = [
-  {
-    type: 'input',
-    name: 'employee',
-    message: 'What employee would you like to add?',
-  }
-]
-const update_employee = [
-  {
-    type: 'input',
-    name: 'employee',
-    message: 'What employee would you like to add?',
-  }
-]
+
+function db_menu()
 
 function runMenu() {
   return inquirer.prompt(db_menu)
    .then((input) => {console.log(input)
-      if(input.menu === 'View all departments') {
-        view_dept();
-      } else if(input.menu === 'View all roles') {
-          view_role();
-        } else if(input.menu === 'View all employees') {
-            view_emp();
-          } else if(input.menu === 'Add a department') {
-              add_dept();
-            } else if(input.menu === 'Add a role') {
-                add_role();
-              } else if(input.menu === 'Add a employee') {
-                  add_emp();
-                } else if(input.menu === 'Update an employee role') {
-                    update_emp();
-                  } else(input.menu === 'Exit') {
-                      Exit();
-                    }
+      if(input.menu === 'VIEW_DEPARTMENTS') {
+        viewDepartments();
+      } else if(input.menu === 'VIEW_ROLES') {
+          viewRoles();
+        } else if(input.menu === 'VIEW_EMPLOYEES') {
+            viewEmployees();
+          } else if(input.menu === 'ADD_DEPARTMENT') {
+              addDepartment();
+            } else if(input.menu === 'ADD_ROLE') {
+                addRole();
+              } else if(input.menu === 'ADD_EMPLOYEE') {
+                  addEmployee();
+                } else if(input.menu === 'UPDATE_EMPLOYEE_ROLE') {
+                    updateEmployeeRole();
+                  } else if(input.menu === 'UPDATE_EMPLOYEE_MANAGER') {
+                      updateEmployeeManager();
+                    } else if(input.menu === 'VIEW_EMPLOYEES_BY_MANAGER') {
+                        viewEmployeesByManager();  
+                      } else if(input.menu === 'VIEW_EMPLOYEES_BY_DEPARTMENT') {
+                          viewEmployeesByDepartment();
+                        } else(input.menu === 'Exit'); {
+                            Exit();
+                          }
    });
 }
+//view all departments
+function viewDepartments() {
+  db.findAllDepartments()
+   .then(([rows]) => {
+      let departments = rows;
+      console.log('\n') 
+      console.table(departments); 
+  })
+  .then(() => runMenu());
+}
+//view all roles
+function viewRoles() {
+  db.findAllRoles()
+   .then(([rows]) => {
+      let roles = rows;
+      console.log('\n') 
+      console.table(roles); 
+  })
+  .then(() => runMenu());
+}
 //view all employees
-function veiw_emp() {
+function viewEmployees() {
   db.findAllEmployees()
    .then(([rows]) => {
-      let employees = rows
-      const
-      team.push(department);
-       console.log(input) 
-       runMenu();
-  });
-
-//view all employees by department
-function veiw_emp_by_dept() {
+      let employees = rows;
+      console.log('\n') 
+      console.table(employees); 
+  })
+  .then(() => runMenu());
+}
+//add a department
+function addDepartment() {
+  db.findAllDepartments()
+  .then(([rows]) => {
+     let departments = rows
+     const departmentChoices = departments.map(({ id, name }) => ({
+     name: name,
+     value: id,
+}));
+  prompt([
+    {
+      type: 'input',
+      name: 'dept',
+      message: 'What department would you like to add?',
+      choices: departmentChoices
+    }
+  ])
+  .then(res => db.addDepartment(res.departmentId))
+  .then(() => console.log('New department added to the database'))
+  .then(() => runMenu());
+    });
+}
+//add a role
+function addRole() {
+  db.findAllRoles()
+  .then(([rows]) => {
+     let roles = rows
+     const roleChoices = roles.map(({ id, name }) => ({
+     name: name,
+     value: id,
+}));
+  prompt([
+    {
+      type: 'input',
+      name: 'dept',
+      message: 'What role would you like to add?',
+      choices: roleChoices
+    }
+  ])
+  .then(res => db.addRole(res.roleId))
+  .then(() => console.log('New role added to the database'))
+  .then(() => runMenu());
+    });
+}
+//add new employee
+function addEmployee() {
   db.findAllEmployees()
+  .then(([rows]) => {
+     let employees = rows
+     const employeeChoices = employees.map(({ id, first_name, last_name}) => ({
+     name: `${first_name} ${last_name}`,
+     value: id,
+}));
+  prompt([
+    {
+      type: 'input',
+      name: 'dept',
+      message: 'What employee would you like to add?',
+      choices: employeeChoices
+    }
+  ])
+  .then(res => db.addEmployee(res.employeeId))
+  .then(() => console.log('New employee added to the database'))
+  .then(() => runMenu());
+    });
+}
+//view all employees by manager
+function viewEmployeesByManager() {
+  db.findAllEmployees()
+   .then(([rows]) => {
+      let managers = rows
+      const managerChoices = managers.map(({ id, first_name, last_name }) => ({
+      name: `${first_name} ${last_name}`,
+      value: id,
+}));
+  prompt([
+    {
+      type: 'list',
+      name: 'managerId',
+      message: "Which manager would you like to see employees for?",
+      choices: managerChoices
+    }
+  ])
+    .then(res => db.findAllEmployeesByDepartment(res.managerId))
+    .then(([rows]) => {
+      let employees = rows;
+      console.log('\n');
+      console.table(employees);
+    })
+    .then(() => runMenu());
+  });
+}
+//view all employees by department
+function viewEmployeesByDepartment() {
+  db.findAllDepartments()
    .then(([rows]) => {
       let departments = rows
-      const departmentChoices = 
-      team.push(department);
-       console.log(input) 
-       runMenu();
-  });
-
-function add_dept() {
-  return inquirer.prompt(add_department)
-   .then((input) => {
-      const department = new department(input.title, input.salary, input.dept_id);
-      team.push(department);
-       console.log(input) 
-       runMenu();
-  });
-}
-function add_role() {
-  return inquirer.prompt(add_role)
-   .then((input) => {
-      const role = new role(input.title, input.salary, input.dept_id);
-      team.push(role);
-       console.log(input) 
-       runMenu();
-  });
-}
-function add_emp() {
-  return inquirer.prompt(add_employee)
-   .then((input) => {
-      const employee = new employee(input.title, input.salary, input.dept_id);
-      team.push(employee);
-       console.log(input) 
-       runMenu();
-  });
-}
-function update_emp() {
-  return inquirer.prompt(update_employee)
-   .then(([rows]) => {
-    let roles =rows;  
-    const roleChoices = roles.map(({title, id})=>({
-     title:
-     id:
-    })
-    )
-      team.push(employee);
-       console.log(input) 
-       runMenu();
-  });
-}
-
-function buildTeam() {
-  return inquirer.prompt(menu)
-   .then((input) => {console.log(input)
-      
-          //console.log("Team Profile Generated!")
+      const departmentChoices = departments.map(({ id, name }) => ({
+      name: name,
+      value: id,
+}));
+  prompt([
+    {
+      type: 'list',
+      name: 'departmentId',
+      message: "Which department would you like to see employees for?",
+      choices: departmentChoices
     }
-  ); 
+  ])
+    .then(res => db.findAllEmployeesByDepartment(res.departmentId))
+    .then(([rows]) => {
+      let employees = rows;
+      console.log('\n');
+      console.table(employees);
+    })
+    .then(() => runMenu());
+  });
 }
-
-
-//Query
-db.query('SELECT *FROM department', function (err, results){
-  console.log(results);
-});
-
-app.use((req, res) => {
-  res.status(404).end();
-});
-
-app.listen(port, () => {
-console.log(`Server running on port ${PORT}`);
-});
-
-
+//update an employee role
+function updateEmployeeRole() {
+  db.findAllEmployees()
+   .then(([rows]) => {
+    let employees =rows;  
+    const employeeChoices = employees.map(({ id, first_name, last_name})=>({
+     name: `${first_name} ${last_name}`,
+     value: id,
+    }));
+    const roleChoices = roles.map(({ id, title })=>({
+      name: title,
+      value: id,
+     }));
+     prompt([
+      {
+        type: 'list',
+        name: 'employeeId',
+        message: "Which employee's role would you like to update?",
+        choices: employeeChoices
+      }
+    ])
+      .then(res => {
+        let employeeId = res.employeeId;
+        db.findAllRoles()
+      .then(([rows]) => {
+        let roles = rows;
+        const roleChoices = roles.map(({ id, title}) => ({
+          name: title,
+          value: id
+        }));
+        prompt([
+          {
+            type: 'list',
+            name: 'employeeId',
+            message: "Which role would you like to assign to the selected employee?",
+            choices: roleChoices
+          }
+        ])
+        .then(res => db.updateEmployeeRole(employeeId, res.roleId))
+        .then(() => console.log("Employee's role is now updated!"))
+        .then(() => runMenu());
+        }) 
+      });
+    })
+  }
+ // update an employee's manager    
+  function updateEmployeeManager() {
+    db.findAllEmployees()
+     .then(([rows]) => {
+      let employees =rows;  
+      const employeeChoices = employees.map(({ id, first_name, last_name})=>({
+       name: `${first_name} ${last_name}`,
+       value: id,
+      }));
+      const managerChoices = roles.map(({ id, first_name, last_name })=>({
+        name: `${first_name} ${last_name}`,
+        value: id,
+       }));
+       prompt([
+        {
+          type: 'list',
+          name: 'employeeId',
+          message: "Which employee's manager would you like to update?",
+          choices: employeeChoices
+        }
+      ])
+      .then(res => {
+        let employeeId = res.employeeId;
+        db.findAllManagers()
+      .then(([rows]) => {
+        let managers = rows;
+        const managerChoices = managers.map(({ id, first_name, last_name }) => ({
+          name: first_name, last_name,
+          value: id
+        }));
+        prompt([
+          {
+            type: 'list',
+            name: 'employeeId',
+            message: "Which manager would you like to assign to the selected employee?",
+            choices: managerChoices
+          }
+        ])
+        .then(res => db.updateEmployeeManager(employeeId, res.managerId))
+        .then(() => console.log("Employee's manager is now updated!"))
+        .then(() => runMenu());
+        }) 
+      });
+      });
+    }
+ // Exit the application
+ function exit() {
+  console.log("Goodbye!");
+  process.exit();
+}
 
 process.exit
