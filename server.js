@@ -1,9 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires, no-undef
 const db = require('./db');
-const express = require('express');
 const inquirer = require('inquirer');
-const connection = require('./config/connection');
 const logo = require('asciiart-logo');
+const config = require('./package.json');
+console.log(logo(config).render());
 
 require('console.table');
 require('asciiart-logo');
@@ -14,97 +14,54 @@ const runMenu = [
     name: 'menu',
     message: 'What would you like to do?',
     choices: [
-      {
-        name: 'View all Departments',
-        value: 'VIEW_DEPARTMENTS',
-      }, 
-      {
-        name:'View all Roles',
-        value: 'VIEW_ROLES',
-      },
-      {
-        name:'View all Employees',
-        value: 'VIEW_EMPLOYEES',
-      },
-      {
-        name:'Add a Department',
-        value: 'ADD_DEPARTMENT',
-      },
-      {
-        name:'Add a Role',
-        value: 'ADD_ROLE',
-      },
-      {
-        name:'Add an Employee',
-        value: 'ADD_EMPLOYEE',
-      },
-      {
-        name:'Update an Employee Role',
-        value: 'UPDATE_EMPLOYEE_ROLE',
-      },
-      {
-        name:'Update Employee Managers',
-        value: 'UPDATE_EMPLOYEE_MANAGERS',
-      },
-      {
-        name:'View Employees by Manager',
-        value: 'VIEW_EMPLOYEES_BY_MANAGER',
-      },
-      {
-        name:'View Employees by department',
-        value: 'VIEW_EMPLOYEES_BY_DEPARTMENT',
-      },
-      {
-        name:'delete Departments',
-        value: 'DELETE_DEPARTMENTS',
-      },
-      {
-        name:'delete Roles',
-        value: 'DELETE_ROLES',
-      },
-      {
-        name:'delete Employees',
-        value: 'DELETE_EMPLOYEES',
-      },
-      {  
-        name: 'Exit',
-        value: 'Exit',
-      },
+      'View all Departments',
+      'View all Roles',
+      'View all Employees',
+      'Add a Department',
+      'Add a Role',
+      'Add an Employee',
+      'Update an Employee Role',
+      'Update Employee Manager',
+      'View Employees by Manager',
+      'View Employees by department',
+      'Delete Departments',
+      'Delete Roles',
+      'Delete Employees',
+      'Exit'
     ],
   },  
-];
+]
 
 function init() {
-  inquirer
-    .prompt(runMenu)
-    .then(res => {
-      if(res.menu === 'VIEW_DEPARTMENTS') {
+  return inquirer.prompt(runMenu)
+    .then((res) => { console.log(res)
+      if(res.menu === 'View all Departments') {
           viewDepartments();
-        } else if(res.menu === 'VIEW_ROLES') {
+        } else if(res.menu === 'View all Roles') {
             viewRoles();
-          } else if(res.menu === 'VIEW_EMPLOYEES') {
+          } else if(res.menu === 'View all Employees') {
               viewEmployees();
-            } else if(res.menu === 'ADD_DEPARTMENT') {
+            } else if(res.menu === 'Add a Department') {
                 addDepartment();
-              } else if(res.menu === 'ADD_ROLE') {
+              } else if(res.menu === 'Add a Role') {
                   addRole();
-                } else if(res.menu === 'ADD_EMPLOYEE') {
+                } else if(res.menu === 'Add an Employee') {
                     addEmployee();
-                  } else if(res.menu === 'UPDATE_EMPLOYEE_ROLE') {
+                  } else if(res.menu === 'Update an Employee Role') {
                       updateEmployeeRole();
-                    } else if(res.menu === 'UPDATE_EMPLOYEE_MANAGER') {
+                    } else if(res.menu === 'Update Employee Manager') {
                         updateEmployeeManager();
-                      } else if(res.menu === 'VIEW_EMPLOYEES_BY_MANAGER') {
+                      } else if(res.menu === 'View Employees by Manager') {
                           viewEmployeesByManager();  
-                        } else if(res.menu === 'VIEW_EMPLOYEES_BY_DEPARTMENT') {
+                        } else if(res.menu === 'View Employees by department') {
                             viewEmployeesByDepartment();
-                          } else if(res.menu === 'DELETE_DEPARTMENT') {
+                          } else if(res.menu === 'Delete Departments') {
                               deleteDepartment();
-                            } else if(res.menu === 'DELETE_ROLE') {
+                            } else if(res.menu === 'Delete Roles') {
                                 deleteRole();
-                              } else if(res.menu === 'DELETE_EMPLOYEE') {
+                              } else if(res.menu === 'Delete Employees') {
                                   deleteEmployee();  
-                                } else(res.menu === 'Exit'); {
+                                } else if(res.menu === 'Exit'); {
                                   Exit()
                                   }                   
     })                             
@@ -419,5 +376,3 @@ function deleteEmployee() {
   console.log("Goodbye!");
   process.exit();
 }
-
-process.exit

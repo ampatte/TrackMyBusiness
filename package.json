@@ -27,8 +27,5 @@
     "type": "git",
     "url": "git+https://github.com/ampatte/TrackMyBusiness.git"
   },
-  "bugs": {
-    "url": "https://github.com/ampatte/TrackMyBusiness/issues"
-  },
   "homepage": "https://github.com/ampatte/TrackMyBusiness#readme"
 }

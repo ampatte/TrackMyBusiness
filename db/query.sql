@@ -1,12 +1,12 @@
 
 SELECT *
-FROM department
+FROM departments
 -- view all departments
 -- department names 
 -- and department ids
 
 SELECT *
-FROM role
+FROM roles
 -- view all roles
 -- job title, 
 -- role id, 
@@ -14,7 +14,7 @@ FROM role
 -- and the salary for that role
 
 SELECT *
-FROM employee
+FROM employees
 -- employee ids
 -- first names
 -- last names
@@ -24,11 +24,11 @@ FROM employee
 -- managers that the employees report to
 
 SELECT *
-FROM role
+FROM roles
 JOIN department ON role.department = department.id;
 
 SELECT *
-FROM role
+FROM roles
 GROUP BY salary;
 
 -- view all employees
@@ -44,20 +44,3 @@ GROUP BY salary;
 SELECT * 
 FROM employee
 JOIN department ON employee.department = department.id;
-
-
-
-
-
-
-
-
-
--- SELECT favorite_books.book_name AS name, book_prices.price AS price
--- FROM favorite_books
--- JOIN book_prices ON favorite_books.book_price = book_prices
-
-
--- SELECT *
--- FROM favorite_books
--- JOIN department ON favorite_books.department = department.id;

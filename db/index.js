@@ -16,7 +16,7 @@ class DB {
 
     findAllRoles() {
         return this.connection.promise().query(
-        "SELECT roles.id, roles.title, roles.title AS roles, roles.salary, LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id");
+        "SELECT roles.id, roles.title, roles.salary AS role LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id");
     }
     //create new role
     addRole(roles) {
@@ -25,7 +25,7 @@ class DB {
 
     findAllEmployees() {
         return this.connection.promise().query(
-        "SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary, CONCAT(manager.first_name,'', manager.last_name) AS manager FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON roles.department_id = departments.id LEFT JOIN employees manager ON manager.id = employees.manager_id");
+        "SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary, CONCAT(manager.first_name,'', manager.last_name) AS manager FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON departments.id = roles.department_id LEFT JOIN employees manager ON manager.id = employees.manager_id");
     }
     //create new employee
     addEmployee(employees) {
@@ -53,10 +53,9 @@ class DB {
         );
     }
 
-
     findAllEmployeesByDepartment(employeeId, departmentId) {
         return this.connection.promise().query(
-        "SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary, departments.name AS department FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON roles.department_id = departments.id LEFT JOIN employees department ON departments.id = employees.department_id"
+        "SELECT departments.id, departments.name, roles.salary AS budget FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON departments.id = roles.department_id GROUP BY departments.id, department.name"
         [employeeId, departmentId]
         );
     }
