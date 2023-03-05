@@ -7,7 +7,7 @@ class DB {
 
     findAllDepartments() {
         return this.connection.promise().query(
-        "SELECT departments.id, departments.name, departments.name AS department");
+        "SELECT departments.id, departments.name, departments.name AS departments");
     }
     //create new department
     addDepartment(departments) {

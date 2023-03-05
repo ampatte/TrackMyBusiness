@@ -3,10 +3,13 @@ const db = require('./db');
 const inquirer = require('inquirer');
 const logo = require('asciiart-logo');
 const config = require('./package.json');
+const { prompt } = require('inquirer');
 console.log(logo(config).render());
 
 require('console.table');
 require('asciiart-logo');
+
+
 
 const runMenu = [
   {
@@ -32,9 +35,12 @@ const runMenu = [
   },  
 ]
 
+init();
+
 function init() {
   return inquirer.prompt(runMenu)
-    .then((res) => { console.log(res)
+    .then((res) => {
+      console.log(res);
       if(res.menu === 'View all Departments') {
           viewDepartments();
         } else if(res.menu === 'View all Roles') {
@@ -55,18 +61,22 @@ function init() {
                           viewEmployeesByManager();  
                         } else if(res.menu === 'View Employees by department') {
                             viewEmployeesByDepartment();
-                          } else if(res.menu === 'Delete Departments') {
+                          } else if(res.menu === 'Delete a Department') {
                               deleteDepartment();
-                            } else if(res.menu === 'Delete Roles') {
+                            } else if(res.menu === 'Delete a Role') {
                                 deleteRole();
-                              } else if(res.menu === 'Delete Employees') {
+                              } else if(res.menu === 'Delete an Employees') {
                                   deleteEmployee();  
-                                } else if(res.menu === 'Exit'); {
-                                  Exit()
+                                } else if(res.menu === 'Exit') {
+                                  exit();
                                   }                   
-    })                             
+    }) 
+    .catch((err) => {
+      console.log (err);
+      process.exit(1);
+    });                            
 };
-init();
+
 //view all departments
 function viewDepartments() {
   db.findAllDepartments()
@@ -75,7 +85,11 @@ function viewDepartments() {
       console.log('\n') 
       console.table(departments); 
   })
-  .then(() => init());
+  .then(() => init())
+  .catch((err) => {
+    console.log(err);
+    process.exit(1);
+  });
 }
 //view all roles
 function viewRoles() {
@@ -85,7 +99,11 @@ function viewRoles() {
       console.log('\n') 
       console.table(roles); 
   })
-  .then(() => init());
+  .then(() => init())
+  .catch((err) => {
+    console.log(err);
+    process.exit(1);
+  });
 }
 //view all employees
 function viewEmployees() {
@@ -95,51 +113,43 @@ function viewEmployees() {
       console.log('\n') 
       console.table(employees); 
   })
-  .then(() => init());
+  .then(() => init())
+  .catch((err) => {
+    console.log(err);
+    process.exit(1);
+  });
 }
 //add a department
 function addDepartment() {
-  db.findAllDepartments()
-  .then(([rows]) => {
-    let departments = rows
-    const departmentChoices = departments.map(({ id, name }) => ({
-      name: name,
-      value: id,
-    }));
-    prompt([
+  prompt([
       {
         type: 'input',
-        name: 'dept',
-        message: 'What department would you like to add?',
-        choices: departmentChoices
+        name: 'name',
+        message: 'What is the name of the new department?',
       }
     ])
-    .then(res => db.addDepartment(res.departmentId))
-    .then(() => console.log('New department added to the database'))
-    .then(() => init());
-  });
-}
+    // .then(res => {
+    // let name = res
+    // db.createDepartment(name)
+  
+    .then(res => db.addDepartment(res.name))
+    .then(() => console.log('New department added to the database')) 
+    .then(() => init())
+  };
+
 //add a role
 function addRole() {
-  db.findAllRoles()
-  .then(([rows]) => {
-    let roles = rows
-    const roleChoices = roles.map(({ id, name }) => ({
-      name: name,
-      value: id,
-    }));
     prompt([
       {
         type: 'input',
-        name: 'dept',
+        name: 'role',
         message: 'What role would you like to add?',
-        choices: roleChoices
       }
     ])
-    .then(res => db.addRole(res.roleId))
+    .then(res => db.addRole(res.role))
     .then(() => console.log('New role added to the database'))
-    .then(() => init());
-  });
+    .then(() => init())
+    ;
 }
 //add new employee
 function addEmployee() {
@@ -153,14 +163,17 @@ function addEmployee() {
     prompt([
       {
         type: 'input',
-        name: 'dept',
+        name: 'employee',
         message: 'What employee would you like to add?',
-        choices: employeeChoices
       }
     ])
-    .then(res => db.addEmployee(res.employeeId))
+    .then(res => db.addEmployee(res.employee))
     .then(() => console.log('New employee added to the database'))
-    .then(() => init());
+    .then(() => init())
+    .catch((err) => {
+      console.log(err);
+      process.exit(1);
+    });
   });
 }
 //view all employees by manager
@@ -186,7 +199,11 @@ function viewEmployeesByManager() {
       console.log('\n');
       console.table(employees);
     })
-    .then(() => init());
+    .then(() => init())
+    .catch((err) => {
+      console.log(err);
+      process.exit(1);
+    });
   });
 }
 //view all employees by department
@@ -212,7 +229,11 @@ function viewEmployeesByDepartment() {
       console.log('\n');
       console.table(employees);
     })
-    .then(() => init());
+    .then(() => init())
+    .catch((err) => {
+      console.log(err);
+      process.exit(1);
+    });
   });
 }
 //update an employee role
@@ -224,15 +245,11 @@ function updateEmployeeRole() {
      name: `${first_name} ${last_name}`,
      value: id,
     }));
-    const roleChoices = roles.map(({ id, title })=>({
-      name: title,
-      value: id,
-     }));
-     prompt([
+    prompt([
       {
         type: 'list',
         name: 'employeeId',
-        message: "Which employee's role would you like to update?",
+        message: "Which employee's would you like to update?",
         choices: employeeChoices
       }
     ])
@@ -248,14 +265,18 @@ function updateEmployeeRole() {
         prompt([
           {
             type: 'list',
-            name: 'employeeId',
+            name: 'roleId',
             message: "Which role would you like to assign to the selected employee?",
             choices: roleChoices
           }
         ])
         .then(res => db.updateEmployeeRole(employeeId, res.roleId))
         .then(() => console.log("Employee's role is now updated!"))
-        .then(() => init());
+        .then(() => init())
+        .catch((err) => {
+          console.log(err);
+          process.exit(1);
+        });
         }) 
       });
     })
@@ -269,15 +290,11 @@ function updateEmployeeRole() {
        name: `${first_name} ${last_name}`,
        value: id,
       }));
-      const managerChoices = managers.map(({ id, first_name, last_name })=>({
-        name: `${first_name} ${last_name}`,
-        value: id,
-       }));
-       prompt([
+      prompt([
         {
           type: 'list',
           name: 'employeeId',
-          message: "Which employee's manager would you like to update?",
+          message: "Which employee's would you like to update?",
           choices: employeeChoices
         }
       ])
@@ -293,18 +310,23 @@ function updateEmployeeRole() {
         prompt([
           {
             type: 'list',
-            name: 'employeeId',
+            name: 'managerId',
             message: "Which manager would you like to assign to the selected employee?",
             choices: managerChoices
           }
         ])
+      })
         .then(res => db.updateEmployeeManager(employeeId, res.managerId))
         .then(() => console.log("Employee's manager is now updated!"))
-        .then(() => init());
+        .then(() => init())
+        .catch((err) => {
+          console.log(err);
+          process.exit(1);
+        
         }) 
       });
-      });
-    }
+    });
+  }
     //delete a department
 function deleteDepartment() {
   db.findAllDepartments()
@@ -324,7 +346,11 @@ function deleteDepartment() {
     ])
     .then(res => db.deleteDepartment(res.departmentId))
     .then(() => console.log('Department deleted from the database'))
-    .then(() => init());
+    .then(() => init())
+    .catch((err) => {
+      console.log(err);
+      process.exit(1);
+    });
   });
 }
 //delete a role
@@ -346,7 +372,11 @@ function deleteRole() {
     ])
     .then(res => db.deleteRole(res.roleId))
     .then(() => console.log('Role deleted from the database'))
-    .then(() => init());
+    .then(() => init())
+    .catch((err) => {
+      console.log(err);
+      process.exit(1);
+    });
   });
 }
 //delete new employee
@@ -368,11 +398,15 @@ function deleteEmployee() {
     ])
     .then(res => db.deleteEmployee(res.employeeId))
     .then(() => console.log('Employee deleted from the database'))
-    .then(() => init());
+    .then(() => init())
+    .catch((err) => {
+      console.log(err);
+      process.exit(1);
+    });
   });
 }
  // Exit the application
- function Exit() {
+ function exit() {
   console.log("Goodbye!");
-  process.exit();
+  process.exit(0);
 }

@@ -1,4 +1,5 @@
 const mysql = require('mysql2');
+require('dotenv').config()
 
 const connection = mysql.createConnection(
     {
@@ -7,11 +8,11 @@ const connection = mysql.createConnection(
       password: process.env['DB_PASSWORD'],
       database: 'employee_db'
     },
-    console.log(`Connected to the employee_db database.`)
   );
 
   connection.connect(function (err) {
     if (err) throw err;
+    console.log(`Connected to the employee_db database.`)
   });
 
   module.exports = connection;
