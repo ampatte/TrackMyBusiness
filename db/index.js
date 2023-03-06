@@ -7,16 +7,26 @@ class DB {
 
     findAllDepartments() {
         return this.connection.promise().query(
-        "SELECT departments.id, departments.name, departments.name AS departments");
+        "SELECT departments.id, departments.name AS department_name " + 
+        "FROM departments"
+        );
     }
     //create new department
     addDepartment(departments) {
-        return this.connection.promise().query("INSERT INTO departments SET ?", departments);
+        if (!departments.name) {
+            throw new Error('Department name cannot be empty');
+        }    
+        return this.connection.promise().query("INSERT INTO departments SET name = ?",
+        departments
+        );
     }
 
     findAllRoles() {
         return this.connection.promise().query(
-        "SELECT roles.id, roles.title, roles.salary AS role LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id");
+        "SELECT roles.id, roles.title, roles.salary, departments.name AS department_name " +
+        "FROM roles " +
+        "LEFT JOIN departments ON roles.department_id = departments.id"
+        );
     }
     //create new role
     addRole(roles) {
@@ -48,14 +58,14 @@ class DB {
     }
     findAllEmployeesByManager(employeeId, managerId) {
         return this.connection.promise().query(
-        "SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary, CONCAT(manager.first_name,'', manager.last_name) AS manager FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON roles.department_id = departments.id LEFT JOIN employees manager ON manager.id = employees.manager_id"
+        "SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary, CONCAT(manager.first_name,'', manager.last_name) AS manager FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON roles.department_id = departments.id LEFT JOIN employees manager ON manager.id = employees.manager_id",
         [employeeId, managerId]
         );
     }
 
     findAllEmployeesByDepartment(employeeId, departmentId) {
         return this.connection.promise().query(
-        "SELECT departments.id, departments.name, roles.salary AS budget FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON departments.id = roles.department_id GROUP BY departments.id, department.name"
+        "SELECT departments.id, departments.name, roles.salary AS budget FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON departments.id = roles.department_id GROUP BY departments.id, departments.name",
         [employeeId, departmentId]
         );
     }
