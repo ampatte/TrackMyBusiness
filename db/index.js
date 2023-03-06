@@ -38,9 +38,14 @@ class DB {
         "SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary, CONCAT(manager.first_name,'', manager.last_name) AS manager FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON departments.id = roles.department_id LEFT JOIN employees manager ON manager.id = employees.manager_id");
     }
     //create new employee
-    addEmployee(employees) {
-        return this.connection.promise().query("INSERT INTO employees SET ?", employees);
-    }
+    addEmployee(firstName, lastName, roleId, managerId) {
+        return this.connection.promise().query("INSERT INTO employees SET ?", { 
+            first_name: firstName, 
+            last_name: lastName, 
+            role_id: roleId, 
+            manager_id: managerId 
+        });
+      }
 
     //Update the given employee's role
     updateEmployeeRole(employeeId, roleId) {

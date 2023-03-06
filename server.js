@@ -27,9 +27,9 @@ const runMenu = [
       'Update Employee Manager',
       'View Employees by Manager',
       'View Employees by department',
-      'Delete Departments',
-      'Delete Roles',
-      'Delete Employees',
+      'Delete a Department',
+      'Delete a Role',
+      'Delete an Employee',
       'Exit'
     ],
   },  
@@ -65,7 +65,7 @@ function init() {
                               deleteDepartment();
                             } else if(res.menu === 'Delete a Role') {
                                 deleteRole();
-                              } else if(res.menu === 'Delete an Employees') {
+                              } else if(res.menu === 'Delete an Employee') {
                                   deleteEmployee();  
                                 } else if(res.menu === 'Exit') {
                                   exit();
@@ -157,6 +157,20 @@ function addRole() {
 }
 //add new employee
 function addEmployee() {
+  db.findAllRoles()
+    .then(([rows]) => {
+    let roles = rows
+    const employeeChoices = roles.map(({ id, title }) => ({
+      name: title,
+      value: id,
+    }));
+  db.findAllEmployees()
+   .then(([rows]) => {
+    let managers = rows
+    const managerChoices = managers.map(({ id, first_name, last_name }) => ({
+      name: `${first_name} ${last_name}`,
+      value: id,
+    }));
     prompt([
       {
         type: 'input',
@@ -169,23 +183,27 @@ function addEmployee() {
         message: 'What is the employee last name?',
       },
       {
-        type: 'input',
+        type: 'list',
         name: 'role',
         message: 'What is the employee role?',
+        choices: employeeChoices
       },
       {
-        type: 'input',
+        type: 'list',
         name: 'manager',
         message: 'Who is the employee manager?',
+        choices: managerChoices
       },
     ])
     .then(res => db.addEmployee(res.first_name, res.last_name, res.role, res.manager))
     .then(() => console.log('New employee added to the database'))
     .then(() => init())
-    .catch((err) => {
-      console.log(err);
-      process.exit(1);
-    });
+    })
+  })  
+  .catch((err) => {
+    console.log(err);
+    process.exit(1);
+  });
 }
 //view all employees by manager
 function viewEmployeesByManager() {
@@ -339,14 +357,15 @@ function updateEmployeeRole() {
     });
   }
     //delete a department
-function deleteDepartment(db) {
-  db.findAllDepartments()
+function deleteDepartment() {
+  return db.findAllDepartments()
   .then(([rows]) => {
      let departments = rows
      const departmentChoices = departments.map(({ id, name }) => ({
      name: name,
      value: id,
     }));
+    console.log('before department list prompt')
     prompt([
       {
         type: 'list',
@@ -355,13 +374,17 @@ function deleteDepartment(db) {
         choices: departmentChoices
       }
     ])
-    .then(res => db.deleteDepartment(res.departmentId))
+    .then(res => {
+      db.deleteDepartment(res.departmentId);
+      return db.deleteDepartment(res.departmentId);
+    })
     .then(() => console.log('Department deleted from the database'))
     .then(() => init())
     .catch((err) => {
       console.log(err);
       process.exit(1);
     });
+    console.log('After department list prompt');
   });
 }
 //delete a role
