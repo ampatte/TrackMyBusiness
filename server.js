@@ -128,39 +128,50 @@ function addDepartment() {
         message: 'What is the name of the new department?',
       }
     ])
-    .then(res => {
-      const department = { name: res.name };
-      return db.addDepartment(department);
-    })
+    .then(res => db.addDepartment(res.name))
     .then(() => console.log('New department added to the database')) 
     .then(() => init())
+    .catch(err => console.error(err));
   }
 
 //add a role
 function addRole() {
+  db.findAllDepartments()
+    .then(([rows]) => {
+    let departments = rows
+    const departmentChoices = departments.map(({ id, name }) => ({
+      name: name,
+      value: id,
+    }));  
     prompt([
       {
         type: 'input',
-        name: 'role',
+        name: 'title',
         message: 'What role would you like to add?',
       },
       {
         type: 'input',
-        name: 'role',
+        name: 'salary',
+        message: 'What is the salary for this role?'
+      },
+      {
+        type: 'list',
+        name: 'department',
         message: 'To what department does this role belong?',
+        choices: departmentChoices
       }
     ]) 
-    .then(res => db.addRole(res.role, res.department))
+    .then(res => db.addRole(res.title, res.salary, res.department))
     .then(() => console.log('New role added to the database'))
     .then(() => init())
-   
+  });
 }
 //add new employee
 function addEmployee() {
   db.findAllRoles()
     .then(([rows]) => {
     let roles = rows
-    const employeeChoices = roles.map(({ id, title }) => ({
+    const roleChoices = roles.map(({ id, title }) => ({
       name: title,
       value: id,
     }));
@@ -186,7 +197,7 @@ function addEmployee() {
         type: 'list',
         name: 'role',
         message: 'What is the employee role?',
-        choices: employeeChoices
+        choices: roleChoices
       },
       {
         type: 'list',
@@ -198,12 +209,13 @@ function addEmployee() {
     .then(res => db.addEmployee(res.first_name, res.last_name, res.role, res.manager))
     .then(() => console.log('New employee added to the database'))
     .then(() => init())
-    })
+   
   })  
   .catch((err) => {
     console.log(err);
     process.exit(1);
   });
+});
 }
 //view all employees by manager
 function viewEmployeesByManager() {
@@ -238,30 +250,30 @@ function viewEmployeesByManager() {
 //view all employees by department
 function viewEmployeesByDepartment() {
   db.findAllDepartments()
-   .then(([rows]) => {
-      let departments = rows
-      const departmentChoices = departments.map(({ id, name }) => ({
-      name: name,
-      value: id,
-  }));
-  prompt([
-    {
-      type: 'list',
-      name: 'departmentId',
-      message: "Which department would you like to see employees for?",
-      choices: departmentChoices
-    }
-  ])
+  .then(([rows]) => {
+  let departments = rows
+  const departmentChoices = departments.map(({ id, name }) => ({
+    name: name,
+    value: id,
+  }));  
+    prompt([
+      {
+        type: 'list',
+        name: 'departmentId',
+        message: "Which department would you like to see employees for?",
+        choices: departmentChoices
+      }
+    ])
     .then(res => db.findAllEmployeesByDepartment(res.departmentId))
-    .then(([rows]) => {
-      let employees = rows;
-      console.log('\n');
-      console.table(employees);
-    })
-    .then(() => init())
-    .catch((err) => {
-      console.log(err);
-      process.exit(1);
+      .then(([rows]) => {
+        let employees = rows;
+        console.log('\n');
+        console.table(employees);
+      })
+      .then(() => init())
+      .catch((err) => {
+        console.log(err);
+        process.exit(1);
     });
   });
 }
@@ -278,7 +290,7 @@ function updateEmployeeRole() {
       {
         type: 'list',
         name: 'employeeId',
-        message: "Which employee's would you like to update?",
+        message: "Which employee would you like to update?",
         choices: employeeChoices
       }
     ])
@@ -323,13 +335,13 @@ function updateEmployeeRole() {
         {
           type: 'list',
           name: 'employeeId',
-          message: "Which employee's would you like to update?",
+          message: "Which employee would you like to update?",
           choices: employeeChoices
         }
       ])
       .then(res => {
         let employeeId = res.employeeId;
-        db.findAllManagers()
+        db.findAllEmployees()
       .then(([rows]) => {
         let managers = rows;
         const managerChoices = managers.map(({ id, first_name, last_name }) => ({
@@ -388,12 +400,12 @@ function deleteDepartment() {
   });
 }
 //delete a role
-function deleteRole(db) {
+function deleteRole() {
   db.findAllRoles()
   .then(([rows]) => {
       let roles = rows
-      const roleChoices = roles.map(({ id, name }) => ({
-      name: name,
+      const roleChoices = roles.map(({ id, title }) => ({
+      name: title,
       value: id,
       }));
     prompt([
@@ -414,7 +426,7 @@ function deleteRole(db) {
   });
 }
 //delete new employee
-function deleteEmployee(db) {
+function deleteEmployee() {
   db.findAllEmployees()
   .then(([rows]) => {
     let employees = rows

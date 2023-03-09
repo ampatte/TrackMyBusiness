@@ -24,7 +24,7 @@ VALUES
         ('Maria', 'Cruz', 3, 1),
         ('Derrik', 'Brown', 5, 1),
         ('Frank', 'Davis', 3, 1),
-        ('Caleb', 'Russell', 4, 64),
+        ('Caleb', 'Russell', 4, 4),
         ('Morris', 'Parks', 7, 1),
         ('Erica', 'Lee', 7, 8),
         ('Sally', 'Cole', 6, 8),
