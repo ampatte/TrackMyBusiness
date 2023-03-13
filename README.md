@@ -1,6 +1,9 @@
 # TrackMyBusiness
-
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+ 
+  [Github repo](https://github.com/ampatte/TrackMyBusiness)
+
+ 
 
   ## Description
   SQL Challenge: Employee Tracker This project was an assignment to build a command-line application to manage a company's employee database.
@@ -14,11 +17,13 @@
   - [License](#License)
   
   ## Installation
-  To run this project you would first have to install Node.js, Inquirer, and MySQL.
+  To run this project you would first have to run npm install with the following dependencies: Node.js, Inquirer, MySQL and console.table package.
 
   ## Usage
-  The project was created as a homework assignment but it can be used in the real world to  help organize a business.
-  ![TrackMyBusiness](assets/employeeTracker.png)
+  The project was created as a homework assignment but it can be used in the real world to help organize a business.
+  [Watch a walkthough of this application here.](https://watch.screencastify.com/v/GPVcaU1jGiwceCd3X5C5)
+
+![TrackMyBusiness](assets/employeeTracker.png)
   
   ## Contribution
   I was the only contributer to this project.
