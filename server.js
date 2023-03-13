@@ -323,26 +323,26 @@ function updateEmployeeRole() {
     })
   }
  // update an employee's manager    
-  function updateEmployeeManager() {
-    db.findAllEmployees()
-     .then(([rows]) => {
-      let employees =rows;  
-      const employeeChoices = employees.map(({ id, first_name, last_name})=>({
-       name: `${first_name} ${last_name}`,
-       value: id,
-      }));
-      prompt([
-        {
-          type: 'list',
-          name: 'employeeId',
-          message: "Which employee would you like to update?",
-          choices: employeeChoices
-        }
-      ])
-      .then(res => {
-        let employeeId = res.employeeId;
-        db.findAllEmployees()
-      .then(([rows]) => {
+ function updateEmployeeManager() {
+  db.findAllEmployees()
+    .then(([rows]) => {
+    let employees = rows;
+    const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
+      name: `${first_name} ${last_name}`,
+      value: id,
+    }));
+    prompt([
+      {
+        type: 'list',
+        name: 'employeeId',
+        message: "Which employee would you like to update?",
+        choices: employeeChoices
+      }
+    ])
+    .then(res => {
+      let employeeId = res.employeeId;
+      db.findAllEmployees()
+        .then(([rows]) => {
         let managers = rows;
         const managerChoices = managers.map(({ id, first_name, last_name }) => ({
           name: `${first_name} ${last_name}`,
@@ -356,18 +356,19 @@ function updateEmployeeRole() {
             choices: managerChoices
           }
         ])
-      })
         .then(res => db.updateEmployeeManager(employeeId, res.managerId))
         .then(() => console.log("Employee's manager is now updated!"))
-        .then(() => init())
+        .then(() =>  init())
         .catch((err) => {
           console.log(err);
           process.exit(1);
-        
-        }) 
+        })
       });
     });
-  }
+  });
+}
+
+
     //delete a department
 function deleteDepartment() {
   return db.findAllDepartments()
